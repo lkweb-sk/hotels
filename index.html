@@ -216,8 +216,9 @@
     >
         <div class="container mx-auto px-6 flex justify-between items-center">
             <!-- Logo -->
-            <a href="#" class="text-2xl font-display font-bold tracking-widest uppercase transition-colors duration-300"
-               :class="scrolled ? 'text-luxury-dark' : 'text-white'">
+            <!-- UPDATED: Added relative z-50 and mobileMenuOpen check for color -->
+            <a href="#" class="relative z-50 text-2xl font-display font-bold tracking-widest uppercase transition-colors duration-300"
+               :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'">
                 Môj hotel
             </a>
 
@@ -232,7 +233,8 @@
             </nav>
 
             <!-- Mobile Menu Button -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden focus:outline-none z-50">
+            <!-- UPDATED: Added x-show="!mobileMenuOpen" to hide hamburger when menu is open -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen" class="md:hidden focus:outline-none z-50">
                 <i class="fa-solid fa-bars text-2xl transition-colors" :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'"></i>
             </button>
         </div>
@@ -247,6 +249,7 @@
              x-transition:leave-end="opacity-0 -translate-y-full"
              class="absolute top-0 left-0 w-full h-screen bg-white z-40 flex flex-col items-center justify-center space-y-8 shadow-2xl md:hidden">
              
+             <!-- Close Button -->
              <button @click="mobileMenuOpen = false" class="absolute top-6 right-6 text-3xl text-luxury-dark">
                 <i class="fa-solid fa-times"></i>
              </button>
