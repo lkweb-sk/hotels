@@ -6,28 +6,23 @@
     <meta name="description" content="Penzión Maja - Útulné ubytovanie vo Vitanovej. Tiché prostredie, veľký dvor a srdeční majitelia. Ideálne na oddych pod lesom.">
     <title>Môj Hotel | Oáza pokoja pre rodinu</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap&subset=latin,latin-ext" rel="stylesheet">
 
-    <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CLASSIC CSS STYLES (No Tailwind) -->
     <style>
         /* --- VARIABLES & RESET --- */
         :root {
             --color-dark: #1a1a1a;
             --color-gold: #d4af37;
             --color-gold-hover: #b89628;
-            --color-light: #f9f9f9;
+            --color-light: #f4f4f4;
             --color-white: #ffffff;
             --color-text-gray: #666666;
             --font-heading: 'Lora', serif;
@@ -48,7 +43,7 @@
         body {
             font-family: var(--font-body);
             color: var(--color-dark);
-            background-color: var(--color-light);
+            background-color: var(--color-white);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -186,6 +181,10 @@
             cursor: pointer;
             z-index: 1001;
         }
+		
+		.swiper-pagination-bullet-active  {
+			background-color: #d4af37 !important;
+		 }
 
         /* Header States (Controlled by Alpine) */
         .header-transparent {
@@ -273,7 +272,7 @@
         }
 
         .hero-title {
-            font-size: 3.5rem;
+            font-size: 5rem;
             margin-bottom: 1.5rem;
         }
 
@@ -313,7 +312,7 @@
         }
 
         .section-title {
-            font-size: 3rem;
+            font-size: 2.25rem;
             color: var(--color-dark);
         }
 
@@ -327,49 +326,168 @@
             margin-bottom: 10px;
         }
 
-        /* --- ABOUT SECTION --- */
+        /* --- ABOUT SECTION UPDATE --- */
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: 80px; /* Väčšia medzera medzi textom a obrázkami */
             align-items: center;
         }
 
+        /* Úprava nadpisov podľa obrázka */
+        .about-grid .section-tag {
+            color: var(--color-gold);
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .about-grid .section-title {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            color: var(--color-dark);
+        }
+
+        .about-grid .section-title .italic {
+            font-family: var(--font-heading);
+            font-style: italic;
+            font-weight: 400;
+            color: #9ca3af; /* Svetlejšia šedá pre "telo i dušu" */
+        }
+
+        /* Úprava tlačidla na podčiarknutý odkaz */
+        .about-grid a:not(.btn) {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--color-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--color-gold);
+            padding-bottom: 5px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .about-grid a:not(.btn):hover {
+            color: var(--color-gold);
+            border-color: var(--color-dark);
+        }
+
+        /* --- IMAGE COLLAGE (Podľa požiadaviek) --- */
         .image-collage {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr 1fr; /* Dva stĺpce vedľa seba */
+            gap: 20px; /* Medzera medzi obrázkami */
+            align-items: center; /* Vertikálne centrovanie kontajnera */
+            position: relative;
         }
 
         .image-collage img {
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            height: 20rem; /* POŽIADAVKA: Fixná výška 20rem */
+            object-fit: cover; /* Aby sa obrázok nedeformoval */
+            border-radius: 0; /* POŽIADAVKA: Hranaté obrázky (žiadne zaoblenie) */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); /* Jemný tieň */
+            display: block;
         }
 
-        .collage-1 { transform: translateY(40px); }
+        /* Ľavý obrázok - Posunutý nižšie */
+        .collage-1 {
+            transform: translateY(3rem); /* Posun nadol */
+        }
 
-        /* --- ROOMS (SWIPER) --- */
+        /* Pravý obrázok (druhý v poradí) - Posunutý vyššie */
+        .image-collage img:nth-child(2) {
+            transform: translateY(-3rem); /* Posun nahor */
+        }
+
+        /* Responsivita pre mobily */
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .image-collage {
+                margin-top: 40px;
+            }
+            
+            /* Na mobile zrušíme posun, aby to nerozbilo layout */
+            .collage-1, .image-collage img:nth-child(2) {
+                transform: translateY(0);
+            }
+        }
+
+        * --- ROOMS SECTION UPDATE --- */
+        
+        /* 1. Šedé pozadie pre celú sekciu */
         .rooms-section {
-            background-color: var(--color-gray);
+            background-color: var(--color-light); /* Jemná šedá podľa obrázka */
         }
 
+        /* 2. Rozloženie hlavičky (Text vľavo, šípky vpravo) */
+        .rooms-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end; /* Zarovnanie na spodok textu */
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        /* Navigačné šípky (krúžky) */
+        .rooms-nav-arrows {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #e5e5e5;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--color-dark);
+            font-size: 1rem;
+        }
+
+        .nav-arrow:hover {
+            border-color: var(--color-dark);
+            background-color: var(--color-dark);
+            color: var(--color-white);
+        }
+
+        /* 3. Dizajn Karty */
         .room-card {
             background: var(--color-white);
-            border-radius: 4px;
+            border-radius: 0; /* Hranaté rohy podľa obrázka */
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: none; /* Odstránenie tieňa pre "clean" look (alebo veľmi jemný) */
             transition: var(--transition);
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .room-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            transform: translateY(-5px);
         }
 
+        /* Obrázok */
         .room-img-wrapper {
             position: relative;
-            height: 300px;
+            height: 20rem;
             overflow: hidden;
         }
 
@@ -381,37 +499,79 @@
         }
 
         .room-card:hover .room-img-wrapper img {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
+        /* Cena - biely box vpravo dole */
         .room-price {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 15px;
+            background: #ffffff;
+            color: var(--color-dark);
+            padding: 8px 16px;
             font-size: 0.8rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
+        /* Detaily pod obrázkom */
         .room-details {
             padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: left; /* Zarovnanie textu vľavo */
         }
 
         .room-title {
+            font-family: var(--font-heading);
             font-size: 1.5rem;
             margin-bottom: 10px;
+            color: var(--color-dark);
         }
 
         .room-desc {
-            color: var(--color-text-gray);
+            color: #888;
             font-size: 0.9rem;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-weight: 300;
+            flex-grow: 1;
         }
 
-        .swiper-pagination-bullet-active {
-            background-color: var(--color-gold) !important;
+        /* Tlačidlo Detail Izby */
+        .btn-outline-room {
+            border: 1px solid #e5e5e5;
+            background: transparent;
+            color: var(--color-dark);
+            width: 100%;
+            padding: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-outline-room:hover {
+            border-color: var(--color-dark);
+            background: var(--color-dark);
+            color: var(--color-white);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .rooms-header-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            .rooms-nav-arrows {
+                align-self: flex-end; /* Na mobile šípky vpravo */
+            }
         }
 
         /* --- AMENITIES --- */
@@ -527,6 +687,11 @@
             width: 100%;
             height: 100%;
             filter: grayscale(100%) contrast(1.2);
+			transition: filter 0.5s ease;
+        }
+		
+		.map-container:hover .map-frame {
+            filter: grayscale(0%) contrast(1);
         }
 
         /* --- FOOTER --- */
@@ -624,7 +789,6 @@
         .swiper { overflow: hidden; }
     </style>
     
-    <!-- Alpine Data Object -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('siteContent', () => ({
@@ -708,7 +872,7 @@
 
                 reviews: [
                     {
-                        text: "Dobré ubytovanie za prijateľnú cenu, veľký apartmán s priamym východom na priestranný trávnatý dvor. Ústretoví majitelia s príkladnou starostlivosťou k čistote.",
+                        text: "Dobré ubytovanie za prijateľnú cenu, veľký apartmán s priamym východom na priestranný trávnatý dvor. Ústretoví majitelia s príkladnou starostlivosťou.",
                         author: "Jozef Novák",
                         from: "Slovensko"
                     },
@@ -744,17 +908,13 @@
 
 <body x-data="siteContent" @scroll.window="scrolled = (window.pageYOffset > 50)">
 
-    <!-- Navigation -->
     <header :class="scrolled ? 'header-scrolled' : 'header-transparent'">
         <div class="container header-content">
-            <!-- Logo - farbu meníme podľa stavu menu alebo scrollu -->
             <a href="#" class="logo" 
                :class="(scrolled || mobileMenuOpen) ? 'text-dark' : 'text-white'"
-               style="color: inherit;"> <!-- Inherit color from header class -->
-                Môj hotel
+               style="color: inherit;"> Môj hotel
             </a>
 
-            <!-- Desktop Menu -->
             <nav class="nav-links hidden md:block">
                 <a href="#about" class="nav-link">O nás</a>
                 <a href="#rooms" class="nav-link">Izby</a>
@@ -762,14 +922,15 @@
                 <a href="#contact" class="btn btn-primary">Rezervovať</a>
             </nav>
 
-            <!-- Mobile Menu Button -->
-            <div class="hamburger" @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen">
+            <div class="hamburger" 
+                 @click="mobileMenuOpen = !mobileMenuOpen" 
+                 :class="(scrolled || mobileMenuOpen) ? 'text-dark' : 'text-white'"
+                 x-show="!mobileMenuOpen">
                 <i class="fa-solid fa-bars"></i>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" :class="mobileMenuOpen ? 'open' : ''">
         <div class="close-menu" @click="mobileMenuOpen = false">
             <i class="fa-solid fa-times"></i>
@@ -780,7 +941,6 @@
         <a href="#contact" @click="mobileMenuOpen = false" class="mobile-link text-gold">Rezervovať</a>
     </div>
 
-    <!-- Hero Section -->
     <section class="hero" :style="`background-image: url('${hero.bgImage}')`">
         <div class="hero-overlay"></div>
         <div class="hero-text text-center">
@@ -796,7 +956,6 @@
         </div>
     </section>
 
-    <!-- About Section -->
     <section id="about">
         <div class="container">
             <div class="about-grid">
@@ -819,17 +978,26 @@
         </div>
     </section>
 
-    <!-- Rooms Section -->
-    <section id="rooms" class="rooms-section">
+    <section id="rooms" class="rooms-section" style="background-color:#f4f4f4;">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Ubytovanie</h2>
-                <p class="text-gray">Útulné a čisté izby za skvelú cenu.</p>
+            <div class="rooms-header-flex" data-aos="fade-up">
+                <div class="rooms-text-content">
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 5px;">Ubytovanie</h2>
+                    <p class="text-gray" style="text-align: left;">Útulné a čisté izby za skvelú cenu.</p>
+                </div>
+                
+                <div class="rooms-nav-arrows">
+                    <div class="nav-arrow swiper-custom-prev">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </div>
+                    <div class="nav-arrow swiper-custom-next">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
             </div>
             
             <div class="swiper roomSwiper">
                 <div class="swiper-wrapper" style="padding-bottom: 50px;">
-                    <!-- Alpine x-for -->
                     <template x-for="room in rooms" :key="room.title">
                         <div class="swiper-slide">
                             <div class="room-card">
@@ -840,7 +1008,7 @@
                                 <div class="room-details">
                                     <h3 class="room-title" x-text="room.title"></h3>
                                     <p class="room-desc" x-text="room.desc"></p>
-                                    <button class="btn btn-outline">Detail Izby</button>
+                                    <button class="btn btn-outline-room">Detail Izby</button>
                                 </div>
                             </div>
                         </div>
@@ -851,7 +1019,6 @@
         </div>
     </section>
 
-    <!-- Amenities Section -->
     <section id="amenities">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
@@ -871,7 +1038,6 @@
         </div>
     </section>
 
-    <!-- Parallax Mood Section -->
     <section class="mood-section" :style="`background-image: url('${mood.bgImage}')`">
         <div class="mood-overlay"></div>
         <div class="quote-box" data-aos="zoom-in">
@@ -883,11 +1049,10 @@
         </div>
     </section>
 
-    <!-- Reviews Section -->
     <section class="reviews-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Hodnotenia hostí</h2>
+                <h2 class="section-title">Hodnotenia našich hostí</h2>
                 <div style="width: 60px; height: 3px; background: var(--color-gold); margin: 20px auto;"></div>
             </div>
 
@@ -913,12 +1078,11 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" style="padding: 0;">
         <div class="contact-section">
             <div class="contact-info">
                 <span class="section-tag">Kde nás nájdete</span>
-                <h2 class="section-title text-white" style="margin-bottom: 40px;">Kontaktujte nás</h2>
+                <h2 class="text-white section-title" style="margin-bottom: 40px; color:white;">Kontaktujte nás</h2>
                 
                 <div class="contact-item">
                     <i class="fa-solid fa-location-dot"></i>
@@ -950,7 +1114,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-grid">
@@ -984,7 +1147,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Môj Hotel. Všetky práva vyhradené.</p>
+                <p>© 2026 Môj Hotel. Všetky práva vyhradené.</p>
                 <div class="social-icons">
                     <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
                     <a href="#"><i class="fa-brands fa-instagram"></i></a>
@@ -993,7 +1156,6 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -1015,6 +1177,11 @@
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
+            },
+            // PRIDANÁ NAVIGÁCIA PRE ŠÍPKY
+            navigation: {
+                nextEl: '.swiper-custom-next',
+                prevEl: '.swiper-custom-prev',
             },
             pagination: {
                 el: '.swiper-pagination',
