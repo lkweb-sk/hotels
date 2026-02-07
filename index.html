@@ -2,11 +2,11 @@
 <html lang="sk" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Môj Hotel - Útulné ubytovanie na Slovensku. Tiché prostredie, veľký dvor a srdeční majitelia. Ideálne na oddych pod lesom.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Penzión Maja - Útulné ubytovanie vo Vitanovej. Tiché prostredie, veľký dvor a srdeční majitelia. Ideálne na oddych pod lesom.">
     <title>Môj Hotel | Oáza pokoja pre rodinu</title>
 
-    <!-- Google Fonts - Switched to Inter and Lora for better Slovak support -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap&subset=latin,latin-ext" rel="stylesheet">
@@ -20,8 +20,72 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CRITICAL CSS FALLBACK (Záchranné štýly)
+         Tieto štýly sa načítajú okamžite, aj keby zlyhal JavaScript alebo Tailwind CDN.
+         Zabezpečia, že stránka nebude "rozbitá" na iPhone.
+    -->
+    <style>
+        /* Reset a základ */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            color: #1a1a1a; 
+            background-color: #f9f9f9;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; /* Fix pre horizontálne posúvanie */
+        }
+        
+        /* Typografia */
+        h1, h2, h3, h4, .font-display { font-family: 'Lora', serif; }
+        
+        /* Obrázky - aby neboli obrovské ak zlyhá CSS */
+        img { max-width: 100%; height: auto; display: block; }
+        
+        /* Layout záloha */
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .hidden { display: none; }
+        
+        /* Swiper Fix pre iOS */
+        .swiper { width: 100%; overflow: hidden; position: relative; }
+        .swiper-wrapper { width: 100%; height: 100%; display: flex; }
+        .swiper-slide { flex-shrink: 0; width: 100%; height: 100%; position: relative; }
+        .swiper-pagination-bullet-active { background-color: #d4af37 !important; }
+
+        /* Parallax Fix pre iOS (Vypnutý fixed na touch zariadeniach) */
+        .parallax-bg {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: scroll; /* Default pre mobil */
+        }
+        
+        @media (min-width: 1024px) {
+            .parallax-bg {
+                background-attachment: fixed; /* Len pre desktop */
+            }
+        }
+
+        /* Glass efekt */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Alpine Cloak - skryje prvky pred načítaním dát */
+        [x-cloak] { display: none !important; }
+        
+        /* Map Filter */
+        .map-filter { filter: grayscale(100%) contrast(1.2); }
+    </style>
+
+    <!-- Tailwind CSS CDN (Verzia 3.4.1) -->
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    
+    <!-- Tailwind Konfigurácia -->
     <script>
         tailwind.config = {
             theme: {
@@ -36,7 +100,6 @@
                         }
                     },
                     fontFamily: {
-                        // Updated fonts: Lora for headings, Inter for body
                         display: ['Lora', 'serif'],
                         body: ['Inter', 'sans-serif'],
                     },
@@ -44,57 +107,22 @@
             }
         }
     </script>
-
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .parallax {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .map-filter {
-            filter: grayscale(100%) contrast(1.2);
-            transition: filter 0.3s ease;
-        }
-        .map-filter:hover { filter: grayscale(0%); }
-
-        .swiper-pagination-bullet-active { background-color: #d4af37 !important; }
-        
-        /* FIX: Ensure Swiper doesn't cause horizontal scroll */
-        .swiper { overflow: hidden !important; } 
-    </style>
     
-    <!-- CENTRALIZOVANÉ DÁTA (SITECONTENT) - MUSÍ BYŤ PRED NAČÍTANÍM ALPINE.JS -->
+    <!-- Alpine.js Data Setup -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('siteContent', () => ({
                 mobileMenuOpen: false,
                 scrolled: false,
                 
-                // --- 1. KONFIGURÁCIA TEXTOV A OBRÁZKOV ---
-                
-                // Sekcia: Hlavný Banner (Hero)
                 hero: {
                     location: "Názov obce, Slovensko",
                     title: "Vaša destinácia pre oddych",
                     subtitle: "Tiché prostredie, skvelé služby a srdečná rodinná atmosféra.",
                     ctaButton: "Overiť dostupnosť",
-                    // Pozadie pre Hero sekciu
                     bgImage: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/d7/54/42/czarny-gron-hotel-spa.jpg"
                 },
 
-                // Sekcia: O nás
                 about: {
                     topTitle: "Náš príbeh",
                     mainTitle: "Pohoda pre",
@@ -106,7 +134,6 @@
                     image2: "https://images.unsplash.com/photo-1572177215152-32f247303126?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
 
-                // Sekcia: Izby (Carousel)
                 rooms: [
                     {
                         title: "Dvojlôžková izba",
@@ -134,7 +161,6 @@
                     }
                 ],
 
-                // Sekcia: Služby (Ikony)
                 amenities: [
                     {
                         icon: "fa-spa",
@@ -158,14 +184,12 @@
                     }
                 ],
 
-                // Sekcia: Citát / Mood (Parallax)
                 mood: {
                     quote: "Fantastické miesto, nádherné prostedie a skvelý personál.",
                     author: "Spokojný hosť",
                     bgImage: "https://images.unsplash.com/photo-1606402179428-a57976d71fa4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                 },
 
-                // Sekcia: Recenzie
                 reviews: [
                     {
                         text: "Dobré ubytovanie za prijateľnú cenu, veľký apartmán s priamym východom na priestranný trávnatý dvor. Ústretoví majitelia s príkladnou starostlivosťou k čistote.",
@@ -184,7 +208,6 @@
                     }
                 ],
 
-                // Sekcia: Kontakt
                 contact: {
                     address: "Lúhy 410, 028 01 Žilina, Slovensko",
                     phone: "+421 909 111 222",
@@ -193,8 +216,6 @@
                     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d168232.17308544947!2d18.93859188463904!3d48.78899742095725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471517188210b5d9%3A0x445cc0bc5eec3ebf!2sFuggerov%20Dvor!5e0!3m2!1ssk!2ssk!4v1770489790805!5m2!1ssk!2ssk"
                 },
 
-                // --- KONIEC KONFIGURÁCIE ---
-
                 init() {
                     this.scrolled = window.pageYOffset > 50;
                 }
@@ -202,335 +223,337 @@
         })
     </script>
 
-    <!-- Alpine.js (Načítané s DEFER a AŽ PO konfigurácii) -->
+    <!-- Alpine.js -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 </head>
 
 <body class="font-body text-luxury-dark antialiased bg-luxury-light" x-data="siteContent" @scroll.window="scrolled = (window.pageYOffset > 50)">
+    
+    <!-- Wrapper to handle overflow correctly -->
+    <div class="w-full overflow-x-hidden relative">
 
-    <!-- Navigation -->
-    <header 
-        class="fixed w-full top-0 z-50 transition-all duration-300 ease-in-out"
-        :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'"
-    >
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <!-- Logo -->
-            <!-- UPDATED: Added relative z-50 and mobileMenuOpen check for color -->
-            <a href="#" class="relative z-50 text-2xl font-display font-bold tracking-widest uppercase transition-colors duration-300"
-               :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'">
-                Môj hotel
-            </a>
-
-            <!-- Desktop Menu -->
-            <nav class="hidden md:flex items-center space-x-8">
-                <a href="#about" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">O nás</a>
-                <a href="#rooms" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Izby</a>
-                <a href="#amenities" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Služby</a>
-                <a href="#contact" class="px-6 py-2 bg-luxury-gold text-white text-sm font-bold uppercase tracking-wide hover:bg-luxury-goldHover hover:scale-105 transition-all duration-300 shadow-lg">
-                    Rezervovať
+        <!-- Navigation -->
+        <header 
+            class="fixed w-full top-0 z-50 transition-all duration-300 ease-in-out"
+            :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'"
+        >
+            <div class="container mx-auto px-6 flex justify-between items-center">
+                <!-- Logo -->
+                <a href="#" class="relative z-50 text-2xl font-display font-bold tracking-widest uppercase transition-colors duration-300"
+                :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'">
+                    Môj hotel
                 </a>
-            </nav>
 
-            <!-- Mobile Menu Button -->
-            <!-- UPDATED: Added x-show="!mobileMenuOpen" to hide hamburger when menu is open -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen" class="md:hidden focus:outline-none z-50">
-                <i class="fa-solid fa-bars text-2xl transition-colors" :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'"></i>
-            </button>
-        </div>
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">O nás</a>
+                    <a href="#rooms" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Izby</a>
+                    <a href="#amenities" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Služby</a>
+                    <a href="#contact" class="px-6 py-2 bg-luxury-gold text-white text-sm font-bold uppercase tracking-wide hover:bg-luxury-goldHover hover:scale-105 transition-all duration-300 shadow-lg">
+                        Rezervovať
+                    </a>
+                </nav>
 
-        <!-- Mobile Menu Overlay -->
-        <div x-show="mobileMenuOpen" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 -translate-y-full"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-300"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-full"
-             class="absolute top-0 left-0 w-full h-screen bg-white z-40 flex flex-col items-center justify-center space-y-8 shadow-2xl md:hidden">
-             
-             <!-- Close Button -->
-             <button @click="mobileMenuOpen = false" class="absolute top-6 right-6 text-3xl text-luxury-dark">
-                <i class="fa-solid fa-times"></i>
-             </button>
-
-             <a href="#about" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">O nás</a>
-             <a href="#rooms" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Izby</a>
-             <a href="#amenities" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Služby</a>
-             <a href="#contact" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-gold">Rezervovať</a>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <!-- UPDATED: Overlay with 20% opacity (0.2) -->
-    <section class="relative h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat bg-fixed"
-             :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${hero.bgImage}')`">
-        <div class="text-center px-6 max-w-4xl mx-auto text-white">
-            <p data-aos="fade-down" data-aos-duration="1000" class="text-sm md:text-base uppercase tracking-[0.3em] mb-4 text-luxury-gold font-bold" x-text="hero.location"></p>
-            <h1 data-aos="fade-up" data-aos-duration="1200" class="text-5xl md:text-7xl lg:text-8xl font-display mb-6 leading-tight" x-text="hero.title"></h1>
-            <p data-aos="fade-up" data-aos-delay="200" class="text-lg md:text-xl text-gray-200 font-light mb-10 max-w-2xl mx-auto" x-text="hero.subtitle"></p>
-            <div data-aos="fade-up" data-aos-delay="400">
-                <a href="#rooms" class="inline-block px-10 py-4 bg-luxury-gold text-white font-bold uppercase tracking-widest hover:bg-white hover:text-luxury-dark hover:scale-105 transition-all duration-300 shadow-2xl" x-text="hero.ctaButton"></a>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#about" class="text-white opacity-70 hover:opacity-100 transition-opacity">
-                <i class="fa-solid fa-chevron-down text-2xl"></i>
-            </a>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-24 bg-white overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <!-- Text Content -->
-                <div data-aos="fade-right" data-aos-duration="1000">
-                    <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block" x-text="about.topTitle"></span>
-                    <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-8 leading-tight">
-                        <span x-text="about.mainTitle"></span> <br><span class="italic text-gray-400" x-text="about.mainTitleHighlight"></span>
-                    </h2>
-                    <p class="text-gray-600 leading-relaxed mb-6 text-lg font-light" x-text="about.text1"></p>
-                    <p class="text-gray-600 leading-relaxed mb-8 text-lg font-light" x-text="about.text2"></p>
-                    <a href="#" class="text-luxury-dark font-bold uppercase tracking-widest border-b-2 border-luxury-gold pb-1 hover:text-luxury-gold transition-colors" x-text="about.ctaLinkText"></a>
-                </div>
-
-                <!-- Image Composition -->
-                <div class="relative" data-aos="fade-left" data-aos-duration="1000">
-                    <div class="grid grid-cols-2 gap-4">
-                        <img :src="about.image1" alt="Exteriér" class="w-full h-80 object-cover rounded-sm transform translate-y-12 shadow-xl">
-                        <img :src="about.image2" alt="Interiér izby" class="w-full h-80 object-cover rounded-sm shadow-xl">
-                    </div>
-                    <!-- Decorative element -->
-                    <div class="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-luxury-gray rounded-full opacity-50"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Rooms Swiper Section -->
-    <section id="rooms" class="py-24 bg-luxury-gray relative">
-        <div class="container mx-auto px-6 mb-12 flex justify-between items-end">
-            <div>
-                <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-2">Ubytovanie</h2>
-                <p class="text-gray-500">Útulné a čisté izby za skvelú cenu.</p>
-            </div>
-            <!-- Custom Navigation Buttons -->
-            <div class="hidden md:flex space-x-4">
-                <button class="room-prev w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <button class="room-next w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
-                    <i class="fa-solid fa-arrow-right"></i>
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen" class="md:hidden focus:outline-none z-50">
+                    <i class="fa-solid fa-bars text-2xl transition-colors" :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'"></i>
                 </button>
             </div>
-        </div>
 
-        <div class="container mx-auto px-6">
-            <div class="swiper roomSwiper">
-                <div class="swiper-wrapper pb-12">
-                    
-                    <!-- Alpine x-for Loop for Rooms -->
-                    <template x-for="room in rooms" :key="room.title">
-                        <div class="swiper-slide">
-                            <div class="bg-white group cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 rounded-sm overflow-hidden h-full">
-                                <div class="relative h-80 overflow-hidden">
-                                    <img :src="room.image" :alt="room.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                    <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold tracking-wide" x-text="room.price"></div>
-                                </div>
-                                <div class="p-8">
-                                    <h3 class="text-2xl font-display mb-2 group-hover:text-luxury-gold transition-colors" x-text="room.title"></h3>
-                                    <p class="text-gray-500 mb-6 font-light" x-text="room.desc"></p>
-                                    <button class="w-full py-3 border border-gray-200 text-luxury-dark uppercase text-xs tracking-widest font-bold group-hover:bg-luxury-dark group-hover:text-white transition-all">
-                                        Detail Izby
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
+            <!-- Mobile Menu Overlay -->
+            <div x-show="mobileMenuOpen" 
+                x-cloak
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 -translate-y-full"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-full"
+                class="absolute top-0 left-0 w-full h-screen bg-white z-40 flex flex-col items-center justify-center space-y-8 shadow-2xl md:hidden">
+                
+                <!-- Close Button -->
+                <button @click="mobileMenuOpen = false" class="absolute top-6 right-6 text-3xl text-luxury-dark">
+                    <i class="fa-solid fa-times"></i>
+                </button>
 
+                <a href="#about" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">O nás</a>
+                <a href="#rooms" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Izby</a>
+                <a href="#amenities" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Služby</a>
+                <a href="#contact" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-gold">Rezervovať</a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="relative h-[100svh] flex items-center justify-center parallax-bg"
+                :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${hero.bgImage}')`">
+            <div class="text-center px-6 max-w-4xl mx-auto text-white">
+                <p data-aos="fade-down" data-aos-duration="1000" class="text-sm md:text-base uppercase tracking-[0.3em] mb-4 text-luxury-gold font-bold" x-text="hero.location"></p>
+                <h1 data-aos="fade-up" data-aos-duration="1200" class="text-5xl md:text-7xl lg:text-8xl font-display mb-6 leading-tight" x-text="hero.title"></h1>
+                <p data-aos="fade-up" data-aos-delay="200" class="text-lg md:text-xl text-gray-200 font-light mb-10 max-w-2xl mx-auto" x-text="hero.subtitle"></p>
+                <div data-aos="fade-up" data-aos-delay="400">
+                    <a href="#rooms" class="inline-block px-10 py-4 bg-luxury-gold text-white font-bold uppercase tracking-widest hover:bg-white hover:text-luxury-dark hover:scale-105 transition-all duration-300 shadow-2xl" x-text="hero.ctaButton"></a>
                 </div>
-                <!-- Pagination for mobile -->
-                <div class="swiper-pagination md:hidden"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Amenities Section -->
-    <section id="amenities" class="py-24 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block">Prečo si vybrať nás</span>
-                <h2 class="text-4xl md:text-5xl font-display text-luxury-dark">Služby a Vybavenie</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Alpine x-for Loop for Amenities -->
-                <template x-for="(item, index) in amenities" :key="index">
-                    <div class="group p-8 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-500 text-center rounded-sm bg-white hover:-translate-y-2" data-aos="fade-up" :data-aos-delay="index * 100">
-                        <div class="w-16 h-16 mx-auto bg-luxury-gray rounded-full flex items-center justify-center mb-6 text-luxury-dark group-hover:bg-luxury-gold group-hover:text-white transition-colors">
-                            <i :class="`fa-solid ${item.icon} text-2xl`"></i>
-                        </div>
-                        <h3 class="text-xl font-display mb-3" x-text="item.title"></h3>
-                        <p class="text-gray-500 font-light text-sm" x-text="item.desc"></p>
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <a href="#about" class="text-white opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-chevron-down text-2xl"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <!-- Text Content -->
+                    <div data-aos="fade-right" data-aos-duration="1000">
+                        <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block" x-text="about.topTitle"></span>
+                        <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-8 leading-tight">
+                            <span x-text="about.mainTitle"></span> <br><span class="italic text-gray-400" x-text="about.mainTitleHighlight"></span>
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed mb-6 text-lg font-light" x-text="about.text1"></p>
+                        <p class="text-gray-600 leading-relaxed mb-8 text-lg font-light" x-text="about.text2"></p>
+                        <a href="#" class="text-luxury-dark font-bold uppercase tracking-widest border-b-2 border-luxury-gold pb-1 hover:text-luxury-gold transition-colors" x-text="about.ctaLinkText"></a>
                     </div>
-                </template>
+
+                    <!-- Image Composition -->
+                    <div class="relative" data-aos="fade-left" data-aos-duration="1000">
+                        <div class="grid grid-cols-2 gap-4">
+                            <img :src="about.image1" alt="Exteriér" class="w-full h-80 object-cover rounded-sm transform translate-y-12 shadow-xl">
+                            <img :src="about.image2" alt="Interiér izby" class="w-full h-80 object-cover rounded-sm shadow-xl">
+                        </div>
+                        <!-- Decorative element -->
+                        <div class="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-luxury-gray rounded-full opacity-50"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Parallax Break / Mood Section -->
-    <section class="py-40 parallax flex items-center justify-center text-center px-6 relative"
-             :style="`background-image: linear-gradient(rgba(26, 26, 26, 0.6), rgba(26, 26, 26, 0.6)), url('${mood.bgImage}')`">
-        <div class="relative z-10 max-w-3xl glass p-10 md:p-16 rounded-sm" data-aos="zoom-in">
-            <i class="fa-solid fa-quote-left text-4xl text-luxury-gold mb-6"></i>
-            <h3 class="text-3xl md:text-5xl font-display text-white leading-snug italic mb-6">
-                "<span x-text="mood.quote"></span>"
-            </h3>
-            <p class="text-white/80 uppercase tracking-widest font-bold">— <span x-text="mood.author"></span></p>
-        </div>
-    </section>
-
-    <!-- Guest Reviews Section -->
-    <section class="py-24 bg-luxury-light">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-display text-luxury-dark mb-4">Hodnotenia našich hostí</h2>
-                <div class="w-16 h-1 bg-luxury-gold mx-auto"></div>
+        <!-- Rooms Swiper Section -->
+        <section id="rooms" class="py-24 bg-luxury-gray relative">
+            <div class="container mx-auto px-6 mb-12 flex justify-between items-end">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-2">Ubytovanie</h2>
+                    <p class="text-gray-500">Útulné a čisté izby za skvelú cenu.</p>
+                </div>
+                <!-- Custom Navigation Buttons -->
+                <div class="hidden md:flex space-x-4">
+                    <button class="room-prev w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <button class="room-next w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
 
-            <!-- Reviews Swiper -->
-            <div class="swiper reviewSwiper max-w-4xl mx-auto">
-                <div class="swiper-wrapper">
-                    <!-- Alpine x-for Loop for Reviews -->
-                    <template x-for="review in reviews" :key="review.author">
-                        <div class="swiper-slide text-center p-4">
-                            <div class="flex justify-center mb-6 text-luxury-gold text-sm space-x-1">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                            </div>
-                            <p class="text-xl md:text-2xl text-gray-700 font-display italic leading-relaxed mb-8">
-                                "<span x-text="review.text"></span>"
-                            </p>
-                            <div class="flex items-center justify-center space-x-4">
-                                <div class="text-center">
-                                    <p class="text-luxury-dark font-bold uppercase text-xs tracking-widest" x-text="review.author"></p>
-                                    <p class="text-gray-400 text-xs" x-text="review.from"></p>
+            <div class="container mx-auto px-6">
+                <div class="swiper roomSwiper">
+                    <div class="swiper-wrapper pb-12">
+                        
+                        <!-- Alpine x-for Loop for Rooms -->
+                        <template x-for="room in rooms" :key="room.title">
+                            <div class="swiper-slide">
+                                <div class="bg-white group cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 rounded-sm overflow-hidden h-full">
+                                    <div class="relative h-80 overflow-hidden">
+                                        <img :src="room.image" :alt="room.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold tracking-wide" x-text="room.price"></div>
+                                    </div>
+                                    <div class="p-8">
+                                        <h3 class="text-2xl font-display mb-2 group-hover:text-luxury-gold transition-colors" x-text="room.title"></h3>
+                                        <p class="text-gray-500 mb-6 font-light" x-text="room.desc"></p>
+                                        <button class="w-full py-3 border border-gray-200 text-luxury-dark uppercase text-xs tracking-widest font-bold group-hover:bg-luxury-dark group-hover:text-white transition-all">
+                                            Detail Izby
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                        </template>
+
+                    </div>
+                    <!-- Pagination for mobile -->
+                    <div class="swiper-pagination md:hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Amenities Section -->
+        <section id="amenities" class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block">Prečo si vybrať nás</span>
+                    <h2 class="text-4xl md:text-5xl font-display text-luxury-dark">Služby a Vybavenie</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Alpine x-for Loop for Amenities -->
+                    <template x-for="(item, index) in amenities" :key="index">
+                        <div class="group p-8 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-500 text-center rounded-sm bg-white hover:-translate-y-2" data-aos="fade-up" :data-aos-delay="index * 100">
+                            <div class="w-16 h-16 mx-auto bg-luxury-gray rounded-full flex items-center justify-center mb-6 text-luxury-dark group-hover:bg-luxury-gold group-hover:text-white transition-colors">
+                                <i :class="`fa-solid ${item.icon} text-2xl`"></i>
+                            </div>
+                            <h3 class="text-xl font-display mb-3" x-text="item.title"></h3>
+                            <p class="text-gray-500 font-light text-sm" x-text="item.desc"></p>
                         </div>
                     </template>
                 </div>
-                <div class="swiper-pagination mt-8"></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Contact & Location Section -->
-    <section id="contact" class="grid grid-cols-1 lg:grid-cols-2">
-        <!-- Contact Info & Form -->
-        <div class="bg-luxury-dark text-white p-12 lg:p-24 flex flex-col justify-center">
-            <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-4 block">Kde nás nájdete</span>
-            <h2 class="text-4xl md:text-5xl font-display mb-8">Kontaktujte nás</h2>
-            
-            <div class="space-y-6 mb-12">
-                <!-- Clickable Address -->
-                <div class="flex items-start space-x-4">
-                    <i class="fa-solid fa-location-dot mt-1 text-luxury-gold"></i>
-                    <a :href="contact.mapUrl" target="_blank" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.address"></a>
-                </div>
-                <!-- Clickable Phone -->
-                <div class="flex items-start space-x-4">
-                    <i class="fa-solid fa-phone mt-1 text-luxury-gold"></i>
-                    <a :href="`tel:${contact.phoneClean}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.phone"></a>
-                </div>
-                <!-- Clickable Email -->
-                <div class="flex items-start space-x-4">
-                    <i class="fa-solid fa-envelope mt-1 text-luxury-gold"></i>
-                    <a :href="`mailto:${contact.email}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.email"></a>
-                </div>
+        <!-- Parallax Break / Mood Section -->
+        <section class="py-40 flex items-center justify-center text-center px-6 relative parallax-bg"
+                :style="`background-image: linear-gradient(rgba(26, 26, 26, 0.6), rgba(26, 26, 26, 0.6)), url('${mood.bgImage}')`">
+            <div class="relative z-10 max-w-3xl glass p-10 md:p-16 rounded-sm" data-aos="zoom-in">
+                <i class="fa-solid fa-quote-left text-4xl text-luxury-gold mb-6"></i>
+                <h3 class="text-3xl md:text-5xl font-display text-white leading-snug italic mb-6">
+                    "<span x-text="mood.quote"></span>"
+                </h3>
+                <p class="text-white/80 uppercase tracking-widest font-bold">— <span x-text="mood.author"></span></p>
             </div>
+        </section>
 
-            <a :href="`tel:${contact.phoneClean}`" class="inline-block text-center w-full md:w-auto px-10 py-4 bg-white text-luxury-dark font-bold uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-300">
-                Zavolať Teraz
-            </a>
-        </div>
-
-        <!-- Google Map Embed -->
-        <div class="h-96 lg:h-auto bg-gray-200 w-full">
-            <iframe 
-                :src="contact.mapUrl" 
-                width="100%" 
-                height="100%" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy"
-                class="map-filter w-full h-full">
-            </iframe>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-black text-white py-16 border-t border-gray-900">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-                <!-- Brand -->
-                <div class="col-span-1 md:col-span-1">
-                    <a href="#" class="text-2xl font-display font-bold uppercase mb-6 block">Môj Hotel</a>
-                    <!-- ACCESSIBILITY FIX: Lighter text color -->
-                    <p class="text-gray-400 text-sm font-light leading-relaxed">
-                        Útulné ubytovanie s rodinnou atmosférou na Slovensku.
-                    </p>
+        <!-- Guest Reviews Section -->
+        <section class="py-24 bg-luxury-light">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-display text-luxury-dark mb-4">Hodnotenia našich hostí</h2>
+                    <div class="w-16 h-1 bg-luxury-gold mx-auto"></div>
                 </div>
 
-                <!-- Links -->
-                <div>
-                    <h4 class="text-lg font-display mb-6 text-gray-300">Menu</h4>
-                    <!-- ACCESSIBILITY FIX: Lighter text color -->
-                    <ul class="space-y-3 text-sm text-gray-400 font-light">
-                        <li><a href="#about" class="hover:text-luxury-gold transition-colors">O nás</a></li>
-                        <li><a href="#rooms" class="hover:text-luxury-gold transition-colors">Ubytovanie</a></li>
-                        <li><a href="#amenities" class="hover:text-luxury-gold transition-colors">Služby</a></li>
-                        <li><a href="#contact" class="hover:text-luxury-gold transition-colors">Kontakt</a></li>
-                    </ul>
-                </div>
-
-                <!-- Links -->
-                <div>
-                    <h4 class="text-lg font-display mb-6 text-gray-300">Informácie</h4>
-                    <!-- ACCESSIBILITY FIX: Lighter text color -->
-                    <ul class="space-y-3 text-sm text-gray-400 font-light">
-                        <li><a href="#" class="hover:text-luxury-gold transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-luxury-gold transition-colors">Ochrana súkromia</a></li>
-                        <li><a href="#" class="hover:text-luxury-gold transition-colors">Podmienky</a></li>
-                    </ul>
-                </div>
-
-                <!-- Newsletter -->
-                <div>
-                    <h4 class="text-lg font-display mb-6 text-gray-300">Novinky</h4>
-                    <!-- ACCESSIBILITY FIX: Lighter text color -->
-                    <p class="text-gray-400 text-sm font-light mb-4">Prihláste sa na odber noviniek.</p>
-                    <form class="flex flex-col space-y-3">
-                        <input type="email" placeholder="Váš email" class="bg-gray-900 border border-gray-800 text-white px-4 py-3 text-sm focus:outline-none focus:border-luxury-gold transition-colors">
-                        <button class="bg-luxury-gold text-white uppercase text-xs font-bold tracking-widest py-3 hover:bg-white hover:text-black transition-colors">
-                            Odoberať
-                        </button>
-                    </form>
+                <!-- Reviews Swiper -->
+                <div class="swiper reviewSwiper max-w-4xl mx-auto">
+                    <div class="swiper-wrapper">
+                        <!-- Alpine x-for Loop for Reviews -->
+                        <template x-for="review in reviews" :key="review.author">
+                            <div class="swiper-slide text-center p-4">
+                                <div class="flex justify-center mb-6 text-luxury-gold text-sm space-x-1">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                </div>
+                                <p class="text-xl md:text-2xl text-gray-700 font-display italic leading-relaxed mb-8">
+                                    "<span x-text="review.text"></span>"
+                                </p>
+                                <div class="flex items-center justify-center space-x-4">
+                                    <div class="text-center">
+                                        <p class="text-luxury-dark font-bold uppercase text-xs tracking-widest" x-text="review.author"></p>
+                                        <p class="text-gray-400 text-xs" x-text="review.from"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="swiper-pagination mt-8"></div>
                 </div>
             </div>
+        </section>
 
-            <div class="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
-                <p>&copy; 2026 Môj Hotel. Všetky práva vyhradené.</p>
-                <div class="flex space-x-6 mt-4 md:mt-0">
-                    <!-- Updated Social Icons: 2x Larger -->
-                    <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-instagram"></i></a>
+        <!-- Contact & Location Section -->
+        <section id="contact" class="grid grid-cols-1 lg:grid-cols-2">
+            <!-- Contact Info & Form -->
+            <div class="bg-luxury-dark text-white p-12 lg:p-24 flex flex-col justify-center">
+                <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-4 block">Kde nás nájdete</span>
+                <h2 class="text-4xl md:text-5xl font-display mb-8">Kontaktujte nás</h2>
+                
+                <div class="space-y-6 mb-12">
+                    <!-- Clickable Address -->
+                    <div class="flex items-start space-x-4">
+                        <i class="fa-solid fa-location-dot mt-1 text-luxury-gold"></i>
+                        <a :href="contact.mapUrl" target="_blank" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.address"></a>
+                    </div>
+                    <!-- Clickable Phone -->
+                    <div class="flex items-start space-x-4">
+                        <i class="fa-solid fa-phone mt-1 text-luxury-gold"></i>
+                        <a :href="`tel:${contact.phoneClean}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.phone"></a>
+                    </div>
+                    <!-- Clickable Email -->
+                    <div class="flex items-start space-x-4">
+                        <i class="fa-solid fa-envelope mt-1 text-luxury-gold"></i>
+                        <a :href="`mailto:${contact.email}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.email"></a>
+                    </div>
+                </div>
+
+                <a :href="`tel:${contact.phoneClean}`" class="inline-block text-center w-full md:w-auto px-10 py-4 bg-white text-luxury-dark font-bold uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-300">
+                    Zavolať Teraz
+                </a>
+            </div>
+
+            <!-- Google Map Embed -->
+            <div class="h-96 lg:h-auto bg-gray-200 w-full">
+                <iframe 
+                    :src="contact.mapUrl" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy"
+                    class="map-filter w-full h-full">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black text-white py-16 border-t border-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                    <!-- Brand -->
+                    <div class="col-span-1 md:col-span-1">
+                        <a href="#" class="text-2xl font-display font-bold uppercase mb-6 block">Môj Hotel</a>
+                        <!-- ACCESSIBILITY FIX: Lighter text color -->
+                        <p class="text-gray-400 text-sm font-light leading-relaxed">
+                            Útulné ubytovanie s rodinnou atmosférou na Slovensku.
+                        </p>
+                    </div>
+
+                    <!-- Links -->
+                    <div>
+                        <h4 class="text-lg font-display mb-6 text-gray-300">Menu</h4>
+                        <!-- ACCESSIBILITY FIX: Lighter text color -->
+                        <ul class="space-y-3 text-sm text-gray-400 font-light">
+                            <li><a href="#about" class="hover:text-luxury-gold transition-colors">O nás</a></li>
+                            <li><a href="#rooms" class="hover:text-luxury-gold transition-colors">Ubytovanie</a></li>
+                            <li><a href="#amenities" class="hover:text-luxury-gold transition-colors">Služby</a></li>
+                            <li><a href="#contact" class="hover:text-luxury-gold transition-colors">Kontakt</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Links -->
+                    <div>
+                        <h4 class="text-lg font-display mb-6 text-gray-300">Informácie</h4>
+                        <!-- ACCESSIBILITY FIX: Lighter text color -->
+                        <ul class="space-y-3 text-sm text-gray-400 font-light">
+                            <li><a href="#" class="hover:text-luxury-gold transition-colors">FAQ</a></li>
+                            <li><a href="#" class="hover:text-luxury-gold transition-colors">Ochrana súkromia</a></li>
+                            <li><a href="#" class="hover:text-luxury-gold transition-colors">Podmienky</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div>
+                        <h4 class="text-lg font-display mb-6 text-gray-300">Novinky</h4>
+                        <!-- ACCESSIBILITY FIX: Lighter text color -->
+                        <p class="text-gray-400 text-sm font-light mb-4">Prihláste sa na odber noviniek.</p>
+                        <form class="flex flex-col space-y-3">
+                            <input type="email" placeholder="Váš email" class="bg-gray-900 border border-gray-800 text-white px-4 py-3 text-sm focus:outline-none focus:border-luxury-gold transition-colors">
+                            <button class="bg-luxury-gold text-white uppercase text-xs font-bold tracking-widest py-3 hover:bg-white hover:text-black transition-colors">
+                                Odoberať
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
+                    <p>&copy; 2026 Môj Hotel. Všetky práva vyhradené.</p>
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <!-- Updated Social Icons: 2x Larger -->
+                        <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- Initialize Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
