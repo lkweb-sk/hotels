@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sk" class="scroll-smooth">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap&subset=latin,latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap&subset=latin,latin-ext" rel="stylesheet">
 
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -20,95 +20,611 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CRITICAL CSS FALLBACK (Záchranné štýly)
-         Tieto štýly sa načítajú okamžite, aj keby zlyhal JavaScript alebo Tailwind CDN.
-         Zabezpečia, že stránka nebude "rozbitá" na iPhone.
-    -->
+    <!-- CLASSIC CSS STYLES (No Tailwind) -->
     <style>
-        /* Reset a základ */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            color: #1a1a1a; 
-            background-color: #f9f9f9;
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --color-dark: #1a1a1a;
+            --color-gold: #d4af37;
+            --color-gold-hover: #b89628;
+            --color-light: #f9f9f9;
+            --color-white: #ffffff;
+            --color-text-gray: #666666;
+            --font-heading: 'Lora', serif;
+            --font-body: 'Inter', sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-dark);
+            background-color: var(--color-light);
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden; /* Fix pre horizontálne posúvanie */
+            overflow-x: hidden;
         }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- UTILITIES --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .text-center { text-align: center; }
+        .text-gold { color: var(--color-gold); }
+        .text-white { color: var(--color-white); }
+        .text-gray { color: var(--color-text-gray); }
         
-        /* Typografia */
-        h1, h2, h3, h4, .font-display { font-family: 'Lora', serif; }
-        
-        /* Obrázky - aby neboli obrovské ak zlyhá CSS */
-        img { max-width: 100%; height: auto; display: block; }
-        
-        /* Layout záloha */
-        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .uppercase { text-transform: uppercase; letter-spacing: 2px; }
+        .italic { font-style: italic; }
+        .font-bold { font-weight: 700; }
+
         .hidden { display: none; }
-        
-        /* Swiper Fix pre iOS */
-        .swiper { width: 100%; overflow: hidden; position: relative; }
-        .swiper-wrapper { width: 100%; height: 100%; display: flex; }
-        .swiper-slide { flex-shrink: 0; width: 100%; height: 100%; position: relative; }
-        .swiper-pagination-bullet-active { background-color: #d4af37 !important; }
+        .block { display: block; }
 
-        /* Parallax Fix pre iOS (Vypnutý fixed na touch zariadeniach) */
-        .parallax-bg {
-            background-position: center;
-            background-repeat: no-repeat;
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--color-gold);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-outline {
+            border: 1px solid #ddd;
+            color: var(--color-dark);
+            background: transparent;
+            width: 100%;
+            padding: 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-dark);
+            color: var(--color-white);
+            border-color: var(--color-dark);
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: background-color 0.4s ease, padding 0.4s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1001; /* Above mobile menu */
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--color-gold) !important;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Header States (Controlled by Alpine) */
+        .header-transparent {
+            background-color: transparent;
+            padding: 30px 0;
+            color: var(--color-white);
+        }
+
+        .header-scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            color: var(--color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        /* Mobile Menu Overlay */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--color-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            z-index: 999;
+            transform: translateY(-100%);
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+
+        .mobile-link {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--color-dark);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--color-dark);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 100vh; /* Fallback */
+            height: 100svh; /* Modern mobile fix */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-size: cover;
-            background-attachment: scroll; /* Default pre mobil */
-        }
-        
-        @media (min-width: 1024px) {
-            .parallax-bg {
-                background-attachment: fixed; /* Len pre desktop */
-            }
+            background-position: center;
+            background-attachment: fixed; /* Desktop only */
         }
 
-        /* Glass efekt */
-        .glass {
+        /* iOS Fix for fixed background */
+        @media (hover: none) {
+            .hero { background-attachment: scroll; }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2); /* 20% dark overlay */
+            z-index: 1;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+            color: var(--color-white);
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-white);
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            z-index: 2;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-10px) translateX(-50%);}
+            60% {transform: translateY(-5px) translateX(-50%);}
+        }
+
+        /* --- SECTIONS GENERAL --- */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            color: var(--color-dark);
+        }
+
+        .section-tag {
+            display: block;
+            color: var(--color-gold);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        /* --- ABOUT SECTION --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .image-collage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-collage img {
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .collage-1 { transform: translateY(40px); }
+
+        /* --- ROOMS (SWIPER) --- */
+        .rooms-section {
+            background-color: var(--color-gray);
+        }
+
+        .room-card {
+            background: var(--color-white);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .room-img-wrapper {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .room-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .room-card:hover .room-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .room-price {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .room-details {
+            padding: 30px;
+        }
+
+        .room-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .room-desc {
+            color: var(--color-text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background-color: var(--color-gold) !important;
+        }
+
+        /* --- AMENITIES --- */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .amenity-card {
+            text-align: center;
+            padding: 40px 20px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .amenity-card:hover {
+            border-color: transparent;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transform: translateY(-5px);
+        }
+
+        .amenity-icon {
+            font-size: 2.5rem;
+            color: var(--color-dark);
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .amenity-card:hover .amenity-icon {
+            color: var(--color-gold);
+        }
+
+        /* --- PARALLAX MOOD --- */
+        .mood-section {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        @media (hover: none) {
+            .mood-section { background-attachment: scroll; }
+        }
+
+        .mood-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .quote-box {
+            position: relative;
+            z-index: 2;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px;
+            max-width: 800px;
+            text-align: center;
+            color: var(--color-white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Alpine Cloak - skryje prvky pred načítaním dát */
+        /* --- CONTACT --- */
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .contact-info {
+            background-color: var(--color-dark);
+            color: var(--color-white);
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .contact-item i {
+            color: var(--color-gold);
+            margin-top: 5px;
+        }
+
+        .contact-link {
+            color: #ccc;
+            font-weight: 300;
+            transition: var(--transition);
+        }
+
+        .contact-link:hover {
+            color: var(--color-gold);
+        }
+
+        .map-container {
+            height: 100%;
+            min-height: 400px;
+        }
+
+        .map-frame {
+            width: 100%;
+            height: 100%;
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 80px 0 30px;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h4 {
+            color: #999;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul a {
+            color: #666;
+        }
+
+        .footer-col ul a:hover {
+            color: var(--color-gold);
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #222;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            color: #555;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            font-size: 1.5rem; /* 2x väčšie */
+        }
+
+        /* --- MEDIA QUERIES (RESPONSIVE) --- */
+        @media (max-width: 1024px) {
+            .amenities-grid, .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .contact-section {
+                grid-template-columns: 1fr;
+            }
+            .contact-info { padding: 60px 20px; }
+            .hero-title { font-size: 2.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: block; }
+            .about-grid { grid-template-columns: 1fr; }
+            .amenities-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 2.2rem; }
+            .quote-box { padding: 30px; }
+            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+            .social-icons { justify-content: center; }
+        }
+        
+        /* Alpine cloak */
         [x-cloak] { display: none !important; }
         
-        /* Map Filter */
-        .map-filter { filter: grayscale(100%) contrast(1.2); }
+        /* Swiper Fix */
+        .swiper { overflow: hidden; }
     </style>
-
-    <!-- Tailwind CSS CDN (Verzia 3.4.1) -->
-    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     
-    <!-- Tailwind Konfigurácia -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        luxury: {
-                            dark: '#1a1a1a',
-                            gold: '#d4af37',
-                            goldHover: '#b89628',
-                            light: '#f9f9f9',
-                            gray: '#f4f4f4'
-                        }
-                    },
-                    fontFamily: {
-                        display: ['Lora', 'serif'],
-                        body: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <!-- Alpine.js Data Setup -->
+    <!-- Alpine Data Object -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('siteContent', () => ({
@@ -223,352 +739,274 @@
         })
     </script>
 
-    <!-- Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-<body class="font-body text-luxury-dark antialiased bg-luxury-light" x-data="siteContent" @scroll.window="scrolled = (window.pageYOffset > 50)">
-    
-    <!-- Wrapper to handle overflow correctly -->
-    <div class="w-full overflow-x-hidden relative">
+<body x-data="siteContent" @scroll.window="scrolled = (window.pageYOffset > 50)">
 
-        <!-- Navigation -->
-        <header 
-            class="fixed w-full top-0 z-50 transition-all duration-300 ease-in-out"
-            :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'"
-        >
-            <div class="container mx-auto px-6 flex justify-between items-center">
-                <!-- Logo -->
-                <a href="#" class="relative z-50 text-2xl font-display font-bold tracking-widest uppercase transition-colors duration-300"
-                :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'">
-                    Môj hotel
-                </a>
+    <!-- Navigation -->
+    <header :class="scrolled ? 'header-scrolled' : 'header-transparent'">
+        <div class="container header-content">
+            <!-- Logo - farbu meníme podľa stavu menu alebo scrollu -->
+            <a href="#" class="logo" 
+               :class="(scrolled || mobileMenuOpen) ? 'text-dark' : 'text-white'"
+               style="color: inherit;"> <!-- Inherit color from header class -->
+                Môj hotel
+            </a>
 
-                <!-- Desktop Menu -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#about" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">O nás</a>
-                    <a href="#rooms" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Izby</a>
-                    <a href="#amenities" class="text-sm uppercase tracking-widest hover:text-luxury-gold transition-colors duration-300" :class="scrolled ? 'text-gray-800' : 'text-white/90'">Služby</a>
-                    <a href="#contact" class="px-6 py-2 bg-luxury-gold text-white text-sm font-bold uppercase tracking-wide hover:bg-luxury-goldHover hover:scale-105 transition-all duration-300 shadow-lg">
-                        Rezervovať
-                    </a>
-                </nav>
+            <!-- Desktop Menu -->
+            <nav class="nav-links hidden md:block">
+                <a href="#about" class="nav-link">O nás</a>
+                <a href="#rooms" class="nav-link">Izby</a>
+                <a href="#amenities" class="nav-link">Služby</a>
+                <a href="#contact" class="btn btn-primary">Rezervovať</a>
+            </nav>
 
-                <!-- Mobile Menu Button -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen" class="md:hidden focus:outline-none z-50">
-                    <i class="fa-solid fa-bars text-2xl transition-colors" :class="(scrolled || mobileMenuOpen) ? 'text-luxury-dark' : 'text-white'"></i>
-                </button>
+            <!-- Mobile Menu Button -->
+            <div class="hamburger" @click="mobileMenuOpen = !mobileMenuOpen" x-show="!mobileMenuOpen">
+                <i class="fa-solid fa-bars"></i>
             </div>
+        </div>
+    </header>
 
-            <!-- Mobile Menu Overlay -->
-            <div x-show="mobileMenuOpen" 
-                x-cloak
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 -translate-y-full"
-                x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-300"
-                x-transition:leave-start="opacity-100 translate-y-0"
-                x-transition:leave-end="opacity-0 -translate-y-full"
-                class="absolute top-0 left-0 w-full h-screen bg-white z-40 flex flex-col items-center justify-center space-y-8 shadow-2xl md:hidden">
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" :class="mobileMenuOpen ? 'open' : ''">
+        <div class="close-menu" @click="mobileMenuOpen = false">
+            <i class="fa-solid fa-times"></i>
+        </div>
+        <a href="#about" @click="mobileMenuOpen = false" class="mobile-link">O nás</a>
+        <a href="#rooms" @click="mobileMenuOpen = false" class="mobile-link">Izby</a>
+        <a href="#amenities" @click="mobileMenuOpen = false" class="mobile-link">Služby</a>
+        <a href="#contact" @click="mobileMenuOpen = false" class="mobile-link text-gold">Rezervovať</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" :style="`background-image: url('${hero.bgImage}')`">
+        <div class="hero-overlay"></div>
+        <div class="hero-text text-center">
+            <p class="uppercase" style="letter-spacing: 3px; margin-bottom: 20px; font-weight: 700; color: var(--color-gold);" data-aos="fade-down" x-text="hero.location"></p>
+            <h1 class="hero-title" data-aos="fade-up" x-text="hero.title"></h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200" x-text="hero.subtitle"></p>
+            <div data-aos="fade-up" data-aos-delay="400">
+                <a href="#rooms" class="btn btn-primary" x-text="hero.ctaButton"></a>
+            </div>
+        </div>
+        <div class="scroll-down">
+            <a href="#about"><i class="fa-solid fa-chevron-down"></i></a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div data-aos="fade-right">
+                    <span class="section-tag" x-text="about.topTitle"></span>
+                    <h2 class="section-title">
+                        <span x-text="about.mainTitle"></span> <br>
+                        <span class="italic text-gray" x-text="about.mainTitleHighlight"></span>
+                    </h2>
+                    <p class="text-gray" style="margin-bottom: 20px;" x-text="about.text1"></p>
+                    <p class="text-gray" style="margin-bottom: 30px;" x-text="about.text2"></p>
+                    <a href="#" style="border-bottom: 2px solid var(--color-gold); font-weight: 700; text-transform: uppercase; font-size: 0.9rem;" x-text="about.ctaLinkText"></a>
+                </div>
                 
-                <!-- Close Button -->
-                <button @click="mobileMenuOpen = false" class="absolute top-6 right-6 text-3xl text-luxury-dark">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-
-                <a href="#about" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">O nás</a>
-                <a href="#rooms" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Izby</a>
-                <a href="#amenities" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-dark">Služby</a>
-                <a href="#contact" @click="mobileMenuOpen = false" class="text-2xl font-display text-luxury-gold">Rezervovať</a>
-            </div>
-        </header>
-
-        <!-- Hero Section -->
-        <section class="relative h-[100svh] flex items-center justify-center parallax-bg"
-                :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${hero.bgImage}')`">
-            <div class="text-center px-6 max-w-4xl mx-auto text-white">
-                <p data-aos="fade-down" data-aos-duration="1000" class="text-sm md:text-base uppercase tracking-[0.3em] mb-4 text-luxury-gold font-bold" x-text="hero.location"></p>
-                <h1 data-aos="fade-up" data-aos-duration="1200" class="text-5xl md:text-7xl lg:text-8xl font-display mb-6 leading-tight" x-text="hero.title"></h1>
-                <p data-aos="fade-up" data-aos-delay="200" class="text-lg md:text-xl text-gray-200 font-light mb-10 max-w-2xl mx-auto" x-text="hero.subtitle"></p>
-                <div data-aos="fade-up" data-aos-delay="400">
-                    <a href="#rooms" class="inline-block px-10 py-4 bg-luxury-gold text-white font-bold uppercase tracking-widest hover:bg-white hover:text-luxury-dark hover:scale-105 transition-all duration-300 shadow-2xl" x-text="hero.ctaButton"></a>
+                <div class="image-collage" data-aos="fade-left">
+                    <img :src="about.image1" alt="Hotel exteriér" class="collage-1">
+                    <img :src="about.image2" alt="Hotel interiér">
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Scroll Indicator -->
-            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <a href="#about" class="text-white opacity-70 hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-chevron-down text-2xl"></i>
-                </a>
+    <!-- Rooms Section -->
+    <section id="rooms" class="rooms-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ubytovanie</h2>
+                <p class="text-gray">Útulné a čisté izby za skvelú cenu.</p>
             </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="py-24 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <!-- Text Content -->
-                    <div data-aos="fade-right" data-aos-duration="1000">
-                        <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block" x-text="about.topTitle"></span>
-                        <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-8 leading-tight">
-                            <span x-text="about.mainTitle"></span> <br><span class="italic text-gray-400" x-text="about.mainTitleHighlight"></span>
-                        </h2>
-                        <p class="text-gray-600 leading-relaxed mb-6 text-lg font-light" x-text="about.text1"></p>
-                        <p class="text-gray-600 leading-relaxed mb-8 text-lg font-light" x-text="about.text2"></p>
-                        <a href="#" class="text-luxury-dark font-bold uppercase tracking-widest border-b-2 border-luxury-gold pb-1 hover:text-luxury-gold transition-colors" x-text="about.ctaLinkText"></a>
-                    </div>
-
-                    <!-- Image Composition -->
-                    <div class="relative" data-aos="fade-left" data-aos-duration="1000">
-                        <div class="grid grid-cols-2 gap-4">
-                            <img :src="about.image1" alt="Exteriér" class="w-full h-80 object-cover rounded-sm transform translate-y-12 shadow-xl">
-                            <img :src="about.image2" alt="Interiér izby" class="w-full h-80 object-cover rounded-sm shadow-xl">
-                        </div>
-                        <!-- Decorative element -->
-                        <div class="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-luxury-gray rounded-full opacity-50"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Rooms Swiper Section -->
-        <section id="rooms" class="py-24 bg-luxury-gray relative">
-            <div class="container mx-auto px-6 mb-12 flex justify-between items-end">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-display text-luxury-dark mb-2">Ubytovanie</h2>
-                    <p class="text-gray-500">Útulné a čisté izby za skvelú cenu.</p>
-                </div>
-                <!-- Custom Navigation Buttons -->
-                <div class="hidden md:flex space-x-4">
-                    <button class="room-prev w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                    <button class="room-next w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="container mx-auto px-6">
-                <div class="swiper roomSwiper">
-                    <div class="swiper-wrapper pb-12">
-                        
-                        <!-- Alpine x-for Loop for Rooms -->
-                        <template x-for="room in rooms" :key="room.title">
-                            <div class="swiper-slide">
-                                <div class="bg-white group cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 rounded-sm overflow-hidden h-full">
-                                    <div class="relative h-80 overflow-hidden">
-                                        <img :src="room.image" :alt="room.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                        <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold tracking-wide" x-text="room.price"></div>
-                                    </div>
-                                    <div class="p-8">
-                                        <h3 class="text-2xl font-display mb-2 group-hover:text-luxury-gold transition-colors" x-text="room.title"></h3>
-                                        <p class="text-gray-500 mb-6 font-light" x-text="room.desc"></p>
-                                        <button class="w-full py-3 border border-gray-200 text-luxury-dark uppercase text-xs tracking-widest font-bold group-hover:bg-luxury-dark group-hover:text-white transition-all">
-                                            Detail Izby
-                                        </button>
-                                    </div>
+            
+            <div class="swiper roomSwiper">
+                <div class="swiper-wrapper" style="padding-bottom: 50px;">
+                    <!-- Alpine x-for -->
+                    <template x-for="room in rooms" :key="room.title">
+                        <div class="swiper-slide">
+                            <div class="room-card">
+                                <div class="room-img-wrapper">
+                                    <img :src="room.image" :alt="room.title">
+                                    <div class="room-price" x-text="room.price"></div>
+                                </div>
+                                <div class="room-details">
+                                    <h3 class="room-title" x-text="room.title"></h3>
+                                    <p class="room-desc" x-text="room.desc"></p>
+                                    <button class="btn btn-outline">Detail Izby</button>
                                 </div>
                             </div>
-                        </template>
-
-                    </div>
-                    <!-- Pagination for mobile -->
-                    <div class="swiper-pagination md:hidden"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Amenities Section -->
-        <section id="amenities" class="py-24 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16" data-aos="fade-up">
-                    <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-2 block">Prečo si vybrať nás</span>
-                    <h2 class="text-4xl md:text-5xl font-display text-luxury-dark">Služby a Vybavenie</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Alpine x-for Loop for Amenities -->
-                    <template x-for="(item, index) in amenities" :key="index">
-                        <div class="group p-8 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-500 text-center rounded-sm bg-white hover:-translate-y-2" data-aos="fade-up" :data-aos-delay="index * 100">
-                            <div class="w-16 h-16 mx-auto bg-luxury-gray rounded-full flex items-center justify-center mb-6 text-luxury-dark group-hover:bg-luxury-gold group-hover:text-white transition-colors">
-                                <i :class="`fa-solid ${item.icon} text-2xl`"></i>
-                            </div>
-                            <h3 class="text-xl font-display mb-3" x-text="item.title"></h3>
-                            <p class="text-gray-500 font-light text-sm" x-text="item.desc"></p>
                         </div>
                     </template>
                 </div>
+                <div class="swiper-pagination"></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Parallax Break / Mood Section -->
-        <section class="py-40 flex items-center justify-center text-center px-6 relative parallax-bg"
-                :style="`background-image: linear-gradient(rgba(26, 26, 26, 0.6), rgba(26, 26, 26, 0.6)), url('${mood.bgImage}')`">
-            <div class="relative z-10 max-w-3xl glass p-10 md:p-16 rounded-sm" data-aos="zoom-in">
-                <i class="fa-solid fa-quote-left text-4xl text-luxury-gold mb-6"></i>
-                <h3 class="text-3xl md:text-5xl font-display text-white leading-snug italic mb-6">
-                    "<span x-text="mood.quote"></span>"
-                </h3>
-                <p class="text-white/80 uppercase tracking-widest font-bold">— <span x-text="mood.author"></span></p>
+    <!-- Amenities Section -->
+    <section id="amenities">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-tag">Prečo si vybrať nás</span>
+                <h2 class="section-title">Služby a Vybavenie</h2>
             </div>
-        </section>
 
-        <!-- Guest Reviews Section -->
-        <section class="py-24 bg-luxury-light">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-display text-luxury-dark mb-4">Hodnotenia našich hostí</h2>
-                    <div class="w-16 h-1 bg-luxury-gold mx-auto"></div>
-                </div>
+            <div class="amenities-grid">
+                <template x-for="(item, index) in amenities" :key="index">
+                    <div class="amenity-card" data-aos="fade-up" :data-aos-delay="index * 100">
+                        <i :class="`fa-solid ${item.icon} amenity-icon`"></i>
+                        <h3 class="text-xl" style="margin-bottom: 10px; font-weight: 600;" x-text="item.title"></h3>
+                        <p class="text-gray" style="font-size: 0.9rem;" x-text="item.desc"></p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
 
-                <!-- Reviews Swiper -->
-                <div class="swiper reviewSwiper max-w-4xl mx-auto">
-                    <div class="swiper-wrapper">
-                        <!-- Alpine x-for Loop for Reviews -->
-                        <template x-for="review in reviews" :key="review.author">
-                            <div class="swiper-slide text-center p-4">
-                                <div class="flex justify-center mb-6 text-luxury-gold text-sm space-x-1">
-                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                                </div>
-                                <p class="text-xl md:text-2xl text-gray-700 font-display italic leading-relaxed mb-8">
-                                    "<span x-text="review.text"></span>"
-                                </p>
-                                <div class="flex items-center justify-center space-x-4">
-                                    <div class="text-center">
-                                        <p class="text-luxury-dark font-bold uppercase text-xs tracking-widest" x-text="review.author"></p>
-                                        <p class="text-gray-400 text-xs" x-text="review.from"></p>
-                                    </div>
-                                </div>
+    <!-- Parallax Mood Section -->
+    <section class="mood-section" :style="`background-image: url('${mood.bgImage}')`">
+        <div class="mood-overlay"></div>
+        <div class="quote-box" data-aos="zoom-in">
+            <i class="fa-solid fa-quote-left text-gold" style="font-size: 2rem; margin-bottom: 20px;"></i>
+            <h3 style="font-size: 2rem; font-style: italic; margin-bottom: 20px;">
+                "<span x-text="mood.quote"></span>"
+            </h3>
+            <p class="uppercase font-bold">— <span x-text="mood.author"></span></p>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Hodnotenia hostí</h2>
+                <div style="width: 60px; height: 3px; background: var(--color-gold); margin: 20px auto;"></div>
+            </div>
+
+            <div class="swiper reviewSwiper" style="max-width: 800px; margin: 0 auto;">
+                <div class="swiper-wrapper">
+                    <template x-for="review in reviews" :key="review.author">
+                        <div class="swiper-slide text-center" style="padding: 20px;">
+                            <div class="text-gold" style="margin-bottom: 20px;">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                             </div>
-                        </template>
-                    </div>
-                    <div class="swiper-pagination mt-8"></div>
+                            <p style="font-size: 1.2rem; font-style: italic; color: #555; margin-bottom: 30px;">
+                                "<span x-text="review.text"></span>"
+                            </p>
+                            <div>
+                                <p class="uppercase font-bold" style="font-size: 0.9rem;" x-text="review.author"></p>
+                                <p style="font-size: 0.8rem; color: #999;" x-text="review.from"></p>
+                            </div>
+                        </div>
+                    </template>
                 </div>
+                <div class="swiper-pagination" style="margin-top: 30px;"></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Contact & Location Section -->
-        <section id="contact" class="grid grid-cols-1 lg:grid-cols-2">
-            <!-- Contact Info & Form -->
-            <div class="bg-luxury-dark text-white p-12 lg:p-24 flex flex-col justify-center">
-                <span class="text-luxury-gold font-bold uppercase tracking-widest text-sm mb-4 block">Kde nás nájdete</span>
-                <h2 class="text-4xl md:text-5xl font-display mb-8">Kontaktujte nás</h2>
+    <!-- Contact Section -->
+    <section id="contact" style="padding: 0;">
+        <div class="contact-section">
+            <div class="contact-info">
+                <span class="section-tag">Kde nás nájdete</span>
+                <h2 class="section-title text-white" style="margin-bottom: 40px;">Kontaktujte nás</h2>
                 
-                <div class="space-y-6 mb-12">
-                    <!-- Clickable Address -->
-                    <div class="flex items-start space-x-4">
-                        <i class="fa-solid fa-location-dot mt-1 text-luxury-gold"></i>
-                        <a :href="contact.mapUrl" target="_blank" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.address"></a>
-                    </div>
-                    <!-- Clickable Phone -->
-                    <div class="flex items-start space-x-4">
-                        <i class="fa-solid fa-phone mt-1 text-luxury-gold"></i>
-                        <a :href="`tel:${contact.phoneClean}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.phone"></a>
-                    </div>
-                    <!-- Clickable Email -->
-                    <div class="flex items-start space-x-4">
-                        <i class="fa-solid fa-envelope mt-1 text-luxury-gold"></i>
-                        <a :href="`mailto:${contact.email}`" class="font-light text-gray-300 hover:text-luxury-gold transition-colors" x-text="contact.email"></a>
-                    </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <a :href="contact.mapUrl" target="_blank" class="contact-link" x-text="contact.address"></a>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <a :href="`tel:${contact.phoneClean}`" class="contact-link" x-text="contact.phone"></a>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <a :href="`mailto:${contact.email}`" class="contact-link" x-text="contact.email"></a>
                 </div>
 
-                <a :href="`tel:${contact.phoneClean}`" class="inline-block text-center w-full md:w-auto px-10 py-4 bg-white text-luxury-dark font-bold uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-300">
+                <a :href="`tel:${contact.phoneClean}`" class="btn btn-primary" style="margin-top: 40px; text-align: center; background: white; color: var(--color-dark);">
                     Zavolať Teraz
                 </a>
             </div>
-
-            <!-- Google Map Embed -->
-            <div class="h-96 lg:h-auto bg-gray-200 w-full">
+            
+            <div class="map-container">
                 <iframe 
                     :src="contact.mapUrl" 
-                    width="100%" 
-                    height="100%" 
+                    class="map-frame"
                     style="border:0;" 
                     allowfullscreen="" 
-                    loading="lazy"
-                    class="map-filter w-full h-full">
+                    loading="lazy">
                 </iframe>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Footer -->
-        <footer class="bg-black text-white py-16 border-t border-gray-900">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-                    <!-- Brand -->
-                    <div class="col-span-1 md:col-span-1">
-                        <a href="#" class="text-2xl font-display font-bold uppercase mb-6 block">Môj Hotel</a>
-                        <!-- ACCESSIBILITY FIX: Lighter text color -->
-                        <p class="text-gray-400 text-sm font-light leading-relaxed">
-                            Útulné ubytovanie s rodinnou atmosférou na Slovensku.
-                        </p>
-                    </div>
-
-                    <!-- Links -->
-                    <div>
-                        <h4 class="text-lg font-display mb-6 text-gray-300">Menu</h4>
-                        <!-- ACCESSIBILITY FIX: Lighter text color -->
-                        <ul class="space-y-3 text-sm text-gray-400 font-light">
-                            <li><a href="#about" class="hover:text-luxury-gold transition-colors">O nás</a></li>
-                            <li><a href="#rooms" class="hover:text-luxury-gold transition-colors">Ubytovanie</a></li>
-                            <li><a href="#amenities" class="hover:text-luxury-gold transition-colors">Služby</a></li>
-                            <li><a href="#contact" class="hover:text-luxury-gold transition-colors">Kontakt</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Links -->
-                    <div>
-                        <h4 class="text-lg font-display mb-6 text-gray-300">Informácie</h4>
-                        <!-- ACCESSIBILITY FIX: Lighter text color -->
-                        <ul class="space-y-3 text-sm text-gray-400 font-light">
-                            <li><a href="#" class="hover:text-luxury-gold transition-colors">FAQ</a></li>
-                            <li><a href="#" class="hover:text-luxury-gold transition-colors">Ochrana súkromia</a></li>
-                            <li><a href="#" class="hover:text-luxury-gold transition-colors">Podmienky</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Newsletter -->
-                    <div>
-                        <h4 class="text-lg font-display mb-6 text-gray-300">Novinky</h4>
-                        <!-- ACCESSIBILITY FIX: Lighter text color -->
-                        <p class="text-gray-400 text-sm font-light mb-4">Prihláste sa na odber noviniek.</p>
-                        <form class="flex flex-col space-y-3">
-                            <input type="email" placeholder="Váš email" class="bg-gray-900 border border-gray-800 text-white px-4 py-3 text-sm focus:outline-none focus:border-luxury-gold transition-colors">
-                            <button class="bg-luxury-gold text-white uppercase text-xs font-bold tracking-widest py-3 hover:bg-white hover:text-black transition-colors">
-                                Odoberať
-                            </button>
-                        </form>
-                    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3 class="logo" style="color: #fff; margin-bottom: 20px;">Môj hotel</h3>
+                    <p style="color: #777; line-height: 1.8;">Útulné ubytovanie s rodinnou atmosférou na Slovensku.</p>
                 </div>
-
-                <div class="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
-                    <p>&copy; 2026 Môj Hotel. Všetky práva vyhradené.</p>
-                    <div class="flex space-x-6 mt-4 md:mt-0">
-                        <!-- Updated Social Icons: 2x Larger -->
-                        <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="hover:text-white transition-colors text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                    </div>
+                <div class="footer-col">
+                    <h4>Menu</h4>
+                    <ul>
+                        <li><a href="#about">O nás</a></li>
+                        <li><a href="#rooms">Ubytovanie</a></li>
+                        <li><a href="#amenities">Služby</a></li>
+                        <li><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Informácie</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Podmienky</a></li>
+                        <li><a href="#">GDPR</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Novinky</h4>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Váš email" class="newsletter-input">
+                        <button class="btn btn-primary" style="padding: 10px;">Odoberať</button>
+                    </form>
                 </div>
             </div>
-        </footer>
-    </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Môj Hotel. Všetky práva vyhradené.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Initialize Scripts -->
+    <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        // Initialize AOS
+        // Init AOS
         AOS.init({
-            once: true, // Animation happens only once
-            offset: 100, // Offset (in px) from the original trigger point
+            once: true,
+            offset: 100,
             duration: 800,
             easing: 'ease-out-cubic',
         });
 
-        // Initialize Rooms Swiper
+        // Init Rooms Swiper
         const roomSwiper = new Swiper('.roomSwiper', {
             slidesPerView: 1,
             spaceBetween: 30,
@@ -578,29 +1016,18 @@
                 delay: 5000,
                 disableOnInteraction: false,
             },
-            navigation: {
-                nextEl: '.room-next',
-                prevEl: '.room-prev',
-            },
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
-                dynamicBullets: true,
             },
             breakpoints: {
-                640: {
-                    slidesPerView: 1,
-                },
-                768: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                },
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
             }
         });
 
-        // Initialize Reviews Swiper
+        // Init Reviews Swiper
         const reviewSwiper = new Swiper('.reviewSwiper', {
             slidesPerView: 1,
             spaceBetween: 30,
